@@ -2,3 +2,7 @@ spring:
   data:
     mongodb:
       uri: mongodb://root:password@localhost:27017/demo
+  webflux:
+    hiddenmethod:
+      filter:
+        enabled: true # html 의 요청방식 get, post 밖에 없는데 타임리프에서 다른것도 사용할려면 true 로 바꿔줘야함

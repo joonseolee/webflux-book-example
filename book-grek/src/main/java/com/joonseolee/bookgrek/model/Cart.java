@@ -1,10 +1,14 @@
 package com.joonseolee.bookgrek.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 
 import java.util.Collections;
 import java.util.List;
 
+@Getter
+@Setter
 public class Cart {
 
     private @Id String id;

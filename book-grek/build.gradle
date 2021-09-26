@@ -6,6 +6,7 @@ plugins {
 
 ext {
     mongoDriverSyncVersion = '4.3.2'
+    blockHoundVersion = '1.0.3.RELEASE'
 }
 
 group = 'com.joonseolee'
@@ -27,6 +28,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    // 테스트용으로만 쓰라고 되어있어서 scope test 로 변경
+    implementation "io.projectreactor.tools:blockhound:${blockHoundVersion}"
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

@@ -3,8 +3,8 @@ package com.joonseolee.bookgrek.controller;
 import com.joonseolee.bookgrek.model.Cart;
 import com.joonseolee.bookgrek.model.CartItem;
 import com.joonseolee.bookgrek.model.Item;
-import com.joonseolee.bookgrek.repository.CartRepository;
-import com.joonseolee.bookgrek.repository.ItemRepository;
+//import com.joonseolee.bookgrek.repository.CartRepository;
+//import com.joonseolee.bookgrek.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Controller;
@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.reactive.result.view.Rendering;
 import reactor.core.publisher.Mono;
 
+import java.io.FileInputStream;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -23,8 +25,8 @@ import java.util.Collections;
 public class HomeController {
 
     private final MongoTemplate mongoTemplate;
-    private final CartRepository cartRepository;
-    private final ItemRepository itemRepository;
+//    private final CartRepository cartRepository;
+//    private final ItemRepository itemRepository;
 
     @GetMapping("/home")
     public Mono<Rendering> homed() {
@@ -34,26 +36,41 @@ public class HomeController {
                 .build());
     }
 
-    @PostMapping("/add/{id}")
-    public Mono<String> addToCart(@PathVariable String id) {
-        return this.cartRepository.findById("My Cart")
-                .defaultIfEmpty(new Cart("My Cart"))
-                .flatMap(cart -> cart.getCartItems().stream()
-                        .filter(cartItem -> cartItem.getItem().getId().equals(id))
-                .findAny()
-                .map(cartItem -> {
-                    cartItem.setQuantity(cartItem.getQuantity() + 1);
-                    return Mono.just(cart);
+    @GetMapping("/file")
+    public Mono<Rendering> readFile() throws Exception {
+        return Mono.delay(Duration.ofSeconds(1))
+                .flatMap(tick -> {
+                    try {
+                        Thread.sleep(10);
+                        return Mono.just(Rendering.view("home").build());
+                    } catch (Exception e) {
+                        return Mono.just(Rendering.view("home").build());
+                    }
                 })
-                .orElseGet(() -> this.itemRepository.findById(id)
-                        .map(CartItem::new)
-                        .map(cartItem -> {
-                            cart.getCartItems().add(cartItem);
-                            return cart;
-                        })))
-                .flatMap(this.cartRepository::save)
-                .thenReturn("redirect:/");
+                .map(none -> Rendering.view("home").build());
     }
+
+//    @PostMapping("/add/{id}")
+//    public Mono<String> addToCart(@PathVariable String id) {
+//        return this.cartRepository.findById("My Cart")
+//                .defaultIfEmpty(new Cart("My Cart"))
+//                .log("first step")
+//                .flatMap(cart -> cart.getCartItems().stream()
+//                        .filter(cartItem -> cartItem.getItem().getId().equals(id))
+//                .findAny()
+//                .map(cartItem -> {
+//                    cartItem.setQuantity(cartItem.getQuantity() + 1);
+//                    return Mono.just(cart);
+//                })
+//                .orElseGet(() -> this.itemRepository.findById(id)
+//                        .map(CartItem::new)
+//                        .map(cartItem -> {
+//                            cart.getCartItems().add(cartItem);
+//                            return cart;
+//                        })))
+//                .flatMap(this.cartRepository::save)
+//                .thenReturn("redirect:/");
+//    }
 
 //    @GetMapping("/home")
 //    public String home(Model model) {
